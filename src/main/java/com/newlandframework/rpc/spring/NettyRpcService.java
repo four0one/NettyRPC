@@ -41,6 +41,8 @@ public class NettyRpcService implements ApplicationContextAware, ApplicationList
 
     @Override
     public void onApplicationEvent(ApplicationEvent event) {
+        //组合目标对象和对象过滤器（思考可以改为包装器模式或者模板方法？但是组合优于继承，
+        // 使用模式需要动态生成过滤器实现目标接口）
         ServiceFilterBinder binder = new ServiceFilterBinder();
 
         if (StringUtils.isBlank(filter) || !(applicationContext.getBean(filter) instanceof Filter)) {

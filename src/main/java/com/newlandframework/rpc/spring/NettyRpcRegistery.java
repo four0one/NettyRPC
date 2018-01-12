@@ -55,17 +55,21 @@ public class NettyRpcRegistery implements InitializingBean, DisposableBean {
         ref.setEchoApiPort(Integer.parseInt(echoApiPort));
         ref.setSerializeProtocol(Enum.valueOf(RpcSerializeProtocol.class, protocol));
 
+        //本地monitor注册器 TODO 暂时忽略这部分代码 考虑改为注册redis
         if (RpcSystemConfig.isMonitorServerSupport()) {
             context.register(ThreadPoolMonitorProvider.class);
             context.refresh();
         }
 
         ref.start();
-
+        //TODO 监控代码
         if (RpcSystemConfig.SYSTEM_PROPERTY_JMX_METRICS_SUPPORT) {
             HashModuleMetricsVisitor visitor = HashModuleMetricsVisitor.getInstance();
+            //ModuleMetricsHandler单例模式，signal开启监控信号量
             visitor.signal();
+            //获取监控处理器
             ModuleMetricsHandler handler = ModuleMetricsHandler.getInstance();
+            //启动监控守护线程
             handler.start();
         }
     }

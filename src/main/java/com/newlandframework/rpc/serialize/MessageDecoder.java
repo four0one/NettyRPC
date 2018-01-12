@@ -47,12 +47,14 @@ public class MessageDecoder extends ByteToMessageDecoder {
         }
 
         in.markReaderIndex();
+        //首位定义消息长度
         int messageLength = in.readInt();
 
         if (messageLength < 0) {
             ctx.close();
         }
 
+        //长度大于可读字节数，返回,重置读游标
         if (in.readableBytes() < messageLength) {
             in.resetReaderIndex();
             return;

@@ -25,6 +25,12 @@ import java.lang.reflect.Method;
  * @since 2017/7/27
  */
 public interface Filter {
+    /**
+     * @param method 目标方法
+     * @param processor 目标对象
+     * @param requestObjects 请求参数
+     * @return
+     */
     // TODO: 2017/7/27 by tangjie
     // If returns false, indicates that the RPC request method is intercept.
     boolean before(Method method, Object processor, Object[] requestObjects);

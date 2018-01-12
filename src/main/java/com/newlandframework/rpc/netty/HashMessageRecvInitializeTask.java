@@ -66,6 +66,7 @@ public class HashMessageRecvInitializeTask extends AbstractMessageRecvInitialize
 
             int index = getHashVisitorListIndex(signatureMethod);
             List<ModuleMetricsVisitor> metricsVisitor = HashModuleMetricsVisitor.getInstance().getHashVisitorList().get(index);
+            //信号量保护visitor调用并发出错
             visitor.set(metricsVisitor.get(hashKey));
             incrementInvoke(visitor.get());
         } finally {

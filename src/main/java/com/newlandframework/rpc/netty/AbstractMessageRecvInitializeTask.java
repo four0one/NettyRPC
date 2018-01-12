@@ -18,6 +18,7 @@ package com.newlandframework.rpc.netty;
 import com.newlandframework.rpc.core.RpcSystemConfig;
 import com.newlandframework.rpc.model.MessageRequest;
 import com.newlandframework.rpc.model.MessageResponse;
+import org.springframework.aop.BeforeAdvice;
 import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.aop.support.NameMatchMethodPointcutAdvisor;
 
@@ -79,6 +80,7 @@ public abstract class AbstractMessageRecvInitializeTask implements Callable<Bool
     }
 
     private Object reflect(MessageRequest request) throws Throwable {
+        //Spring aop 织入filter调用，advice方式也可实现
         ProxyFactory weaver = new ProxyFactory(new MethodInvoker());
         NameMatchMethodPointcutAdvisor advisor = new NameMatchMethodPointcutAdvisor();
         advisor.setMappedName(METHOD_MAPPED_NAME);
@@ -126,6 +128,7 @@ public abstract class AbstractMessageRecvInitializeTask implements Callable<Bool
 
     protected abstract void injectFilterInvoke();
 
+    //申请信号量同步，防止多线程操作引起并发问题
     protected abstract void acquire();
 
     protected abstract void release();

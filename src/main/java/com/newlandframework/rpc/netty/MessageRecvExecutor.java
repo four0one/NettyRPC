@@ -81,6 +81,7 @@ public class MessageRecvExecutor implements ApplicationContextAware {
 
     ThreadFactory threadRpcFactory = new NamedThreadFactory("NettyRPC ThreadFactory");
     EventLoopGroup boss = new NioEventLoopGroup();
+    //自定义工作线程组，线程数为核心数的2倍，使用自定义前缀的线程工厂
     EventLoopGroup worker = new NioEventLoopGroup(PARALLEL, threadRpcFactory, SelectorProvider.provider());
 
     private MessageRecvExecutor() {
@@ -146,6 +147,9 @@ public class MessageRecvExecutor implements ApplicationContextAware {
     public void start() {
         try {
             ServerBootstrap bootstrap = new ServerBootstrap();
+            /**
+             * MessageRecvChannelInitializer生成服务端调用链加解密处理器，由不同的序列化方式选择，之后注册messageRecv处理器，处理rpc消息
+             */
             bootstrap.group(boss, worker).channel(NioServerSocketChannel.class)
                     .childHandler(new MessageRecvChannelInitializer(handlerMap).buildRpcSerializeProtocol(serializeProtocol))
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -159,6 +163,7 @@ public class MessageRecvExecutor implements ApplicationContextAware {
                 ChannelFuture future = null;
                 future = bootstrap.bind(host, port).sync();
 
+                //开启接口能力展现功能模块
                 future.addListener(new ChannelFutureListener() {
                     @Override
                     public void operationComplete(final ChannelFuture channelFuture) throws Exception {
@@ -190,7 +195,9 @@ public class MessageRecvExecutor implements ApplicationContextAware {
     }
 
     private void register() {
+        //预编译处理器
         handlerMap.put(RpcSystemConfig.RPC_COMPILER_SPI_ATTR, new AccessAdaptiveProvider());
+        //rpc调用情况html页面生成
         handlerMap.put(RpcSystemConfig.RPC_ABILITY_DETAIL_SPI_ATTR, new AbilityDetailProvider());
     }
 

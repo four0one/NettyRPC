@@ -21,11 +21,15 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
+ *
+ * 指定创建线程的前缀，指定线程所属线程组，默认为非守护线程
  * @author tangjie<https://github.com/tang-jie>
  * @filename:NamedThreadFactory.java
  * @description:NamedThreadFactory功能模块
  * @blogs http://www.cnblogs.com/jietang/
  * @since 2016/10/7
+ *
+ *
  */
 public class NamedThreadFactory implements ThreadFactory {
 
